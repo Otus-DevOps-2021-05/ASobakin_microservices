@@ -1,14 +1,13 @@
-FROM python:3.6.0-alpine
+FROM python:3.6.14-alpine
 
-RUN apk update && apk add python3-dev gcc libc-dev
 WORKDIR /app
-ADD . /app
+COPY . /app
+
+RUN apk --no-cache --update add build-base && \
+    pip install -r /app/requirements.txt && \
+    apk del build-base
+
 ENV POST_DATABASE_HOST post_db
 ENV POST_DATABASE posts
 
-#RUN pip install --upgrade pip
-
-RUN pip install --requirement /app/requirements.txt
-
-
-CMD ["python3", "post_app.py"]
+ENTRYPOINT ["python3", "post_app.py"]
